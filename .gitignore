@@ -1,0 +1,13 @@
+# Dependency directories
+frontend/node_modules/
+backend/node_modules/
+
+#env files
+frontend/.env
+backend/.env
+
+# IDE settings
+.vscode/
+
+
+

@@ -1,0 +1,11 @@
+{
+  "name": "knowmore-lms",
+  "version": "1.0.0",
+  "description": "LMS project ",
+  "license": "ISC",
+  "author": "nishad",
+  
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
