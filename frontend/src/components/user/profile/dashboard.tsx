@@ -33,7 +33,7 @@ export default function UserProfile() {
           <CardFooter className="flex flex-col items-start gap-4 text-sm">
             <div className="flex items-center gap-2">
               <Mail className="h-4 w-4 opacity-70" />
-              <span>sarah.johnson@example.com</span>
+              <span>sarah.john@example.com</span>
             </div>
             <div className="flex items-center gap-2">
               <Phone className="h-4 w-4 opacity-70" />

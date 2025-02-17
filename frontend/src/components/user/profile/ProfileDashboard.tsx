@@ -23,7 +23,7 @@ export default function UserProfile() {
                 alt="User profile picture"
                 className="object-cover"
                 height="160"
-                src="https://avatar.iran.liara.run/public/36"
+                src="https://avatar.iran.liara.run/public/9"
                 style={{
                   aspectRatio: "150/150",
                   objectFit: "cover",
