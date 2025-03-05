@@ -1,10 +1,10 @@
 import { Request, Response, Router } from "express";
-import { signUp , loginHandler, sendOtpHandler, verifyOtpHandler, refreshTokenHandler, logoutHandler, validateUser, resetPasswordOtpSendHandler, resetPasswordHandler, googleLoginSuccess, googleLoginFailure, adminLogoutHandler, adminLoginHandler, } from "../controllers/authController";
+import { signUp , loginHandler, sendOtpHandler, verifyOtpHandler, refreshTokenHandler, logoutHandler, validateUser, resetPasswordOtpSendHandler, resetPasswordHandler, googleLoginSuccess, googleLoginFailure, adminLogoutHandler, adminLoginHandler, getUserDataController, } from "../controllers/authController";
 import passport from "passport";
 import { googleLogin } from "../controllers/googleAuthLibrary";
 import { registerInstuctorHandler } from "../controllers/instructorController";
 import { authorizeRole, isAuthenticated } from "../middlewares/authMiddleware";
-import { changePasswordHandler, editProfileHandler } from "../controllers/studentController";
+import { changePasswordHandler, editProfileEmailController, editProfileHandler } from "../controllers/studentController";
 
 
 
@@ -28,8 +28,12 @@ router.post('/google', googleLogin )
 router.post('/instructor-register', registerInstuctorHandler)
 
 //user profile
-router.post('/profile/change-password', isAuthenticated, authorizeRole(['student']), changePasswordHandler)
-router.post('/profile/edit', isAuthenticated, authorizeRole(['student']), editProfileHandler)
+router.post('/profile/change-password', isAuthenticated, authorizeRole(['student','instructor']), changePasswordHandler)
+router.post('/profile/edit', isAuthenticated, authorizeRole(['student','instructor']), editProfileHandler)
+router.patch('/profile/edit/email', isAuthenticated, authorizeRole(['student','instructor']), editProfileEmailController)
+
+
+router.get('/user-data/:userId',isAuthenticated, authorizeRole(['student','instructor']), getUserDataController)
 
 
 export default router;

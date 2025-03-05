@@ -12,7 +12,7 @@ export const sendResetOtp = async(email: string) => {
    const otp = await generateOtp(email)
 
    const sendOtp = await sendEmail(email , 'Your OTP for resetting password', 
-    `Subject: Password reset
+    `Subject: Password reset From KnowMore-LMS
 
 Hi,
 

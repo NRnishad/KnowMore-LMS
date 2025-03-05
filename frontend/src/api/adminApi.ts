@@ -16,9 +16,11 @@ export const adminLogout = async() => {
 
 
 // Function to get all users
-export const getUsers = async (): Promise<User[]> => {
+export const getUsers = async (search:string, page:number, limit:number): Promise<User[]> => {
   try {
-    const response = await adminInterceptorApi.get(`${API_URL}/admin/users`);
+    const response = await adminInterceptorApi.get(`${API_URL}/admin/users`, {
+      params:{search, page, limit}
+    });
     return response.data;
   } catch (error) {
     console.error('Error fetching users:', error);
@@ -108,4 +110,111 @@ export const rejectInstructorApplicationAPI = async (id: string) => {
   } catch (error) {
     throw error
   }
+}
+
+export const getAllCategories = async (currentPage: number, itemsPerPage: number, searchQuery: string) => {
+  try {
+  const response = await adminInterceptorApi.get(`${API_URL}/admin/categories`, {params: {page:currentPage, limit:itemsPerPage, query:searchQuery}, withCredentials: true});
+  return response.data;
+  } catch (error) {
+    throw error
+  }
+}
+export const getAllCategoriesAtOnce = async () => {
+  try {
+  const response = await adminInterceptorApi.get(`${API_URL}/admin/categories/all`, {withCredentials: true});
+  return response.data;
+  } catch (error) {
+    throw error
+  }
+}
+
+
+export const createCategory = async (name:string, description: string, parentCategory: string | null , isActive: boolean) => {
+  try {
+    let parentCategoryId = null
+    if(parentCategory === 'none'){
+      parentCategoryId === null
+    }else{
+      parentCategoryId = parentCategory
+    }
+  const response = await adminInterceptorApi.post(`${API_URL}/admin/categories/add`,{name, description, parentCategoryId, isActive}, {withCredentials: true});
+  return response.data;
+  } catch (error) {
+    throw error
+  }
+}
+
+export const editCategory = async (id: string, name:string, description: string, parentCategory: string | null , isActive: boolean) => {
+  try {
+    let parentCategoryId = null
+    if(parentCategory === 'none'){
+      parentCategoryId === null
+    }else{
+      parentCategoryId = parentCategory
+    }
+  const response = await adminInterceptorApi.put(`${API_URL}/admin/categories/${id}/edit`,{name, description, parentCategoryId, isActive}, {withCredentials: true});
+  return response.data;
+  } catch (error) {
+    throw error
+  }
+}
+
+// export const getAllCoursesAdminApi = async (searchQuery: string, currentPage:number, itemsPerPage:number) => {
+//   try {
+//       const response = await adminInterceptorApi.get(`${API_URL}/admin/courses`, {params:{ query: searchQuery, page: currentPage, limit : itemsPerPage}, withCredentials: true });
+//       return response.data;
+//   } catch (error: any) {
+//       throw error?.response?.data || error; // Propagate error to caller
+//     } 
+// }
+
+//get all courses list
+interface GetFilteredCourseParams {
+  categories?: string;
+  sortBy? : string;
+  rating?: number;
+  level ? : string;
+  page? : number;
+  limit ? : number;
+  query? : string
+}
+
+export const getAllCoursesAdminApi = async (params:GetFilteredCourseParams) => {
+  try {
+      const response = await adminInterceptorApi.get(`${API_URL}/admin/courses`, {params:params, withCredentials: true });
+      return response.data;
+  } catch (error: any) {
+      throw error?.response?.data || error; // Propagate error to caller
+    } 
+}
+
+export const getCourseByIdAdminApi = async (courseId: string) => {
+  try {
+      const response = await adminInterceptorApi.get(`${API_URL}/admin/courses/${courseId}`, { withCredentials: true });
+      return response.data;
+  } catch (error: any) {
+      throw error?.response?.data || error; // Propagate error to caller
+    }
+  
+}
+
+export const deleteCourseAdminApi = async (courseId: string) => {
+  try {
+      const response = await adminInterceptorApi.patch(`${API_URL}/admin/courses/${courseId}/delete`, { withCredentials: true });
+      return response.data;
+  } catch (error: any) {
+      throw error?.response?.data || error; // Propagate error to caller
+    }
+  
+}
+
+export const publishCourseAdminApi = async (courseId: string , publishValue : boolean) => {
+  try {
+      const response = await adminInterceptorApi.patch(`${API_URL}/admin/courses/${courseId}/publish`,{publishValue}, { withCredentials: true });
+      return response.data;
+  } catch (error: any) {
+      throw error?.response?.data || error; // Propagate error to caller
+    }
+  
 }

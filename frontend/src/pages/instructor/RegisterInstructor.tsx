@@ -31,7 +31,7 @@ function RegisterInstructor() {
     const handleSubmit = async (values: RegisterInstructorFormValues) => {
         // Call backend API to save instructor details
         try {
-            const response = await dispatch(registerInstructorThunk({data: values, userId: user.id})).unwrap();
+            const response = await dispatch(registerInstructorThunk({data: values, userId: user._id})).unwrap();
             toast.success(response?.message)
             navigate('/home')
         } catch (error: any) {
@@ -47,7 +47,12 @@ function RegisterInstructor() {
         experience: Yup.number().required('Experience is required').positive('Experience must be a positive number').integer('Experience must be a number'),
         expertise: Yup.array().of(Yup.string().required('Expertise required')).min(1, 'Atleast one course interest required').required('Add your course interests'),
         qualifications: Yup.array().of(Yup.string().required('Qualifications are required')).min(1, 'At least one qualification required').required('Qualifications are required'),
-       
+        // resume: Yup.mixed()
+        //     .required('Resume is required')
+        //     .test('fileFormat', 'Unsupported file format', (value: any) => {
+        //         // Ensure a file is selected and check file type (if necessary)
+        //         return value ? ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(value.type) : false;
+        //     }),
     });
     return (
         <div className='md:w-1/3 lg:w-1/3 sm:w-1/2 items-center mx-auto border rounded-md p-6 mt-10 max-w-full'>

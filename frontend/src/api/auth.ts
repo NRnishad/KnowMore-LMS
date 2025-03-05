@@ -13,6 +13,11 @@ export const logout = async() => {
     const response = await api.post(`${API_URL}/auth/logout`, {}, {withCredentials: true});
     return response.data;
 }
+
+export const getUserDataAPI = async(userId: string) => {
+    const response = await api.get(`${API_URL}/auth/user-data/${userId}`,{withCredentials: true});
+    return response.data;
+}
 export const adminLogout = async() => {
     const response = await api.post(`${API_URL}/auth/admin-logout`, {}, {withCredentials: true});
     return response.data;
@@ -29,6 +34,10 @@ export const verifyAccount = async( email: string, otp : string ) => {
     const response = await api.post(`${API_URL}/auth/verify-otp`, {email, otp})
     return response.data;
 }
+export const updateEmailUserProfileAPI = async( email: string, otp : string ) => {
+    const response = await api.patch(`${API_URL}/auth/profile/edit/email`, {email, otp})
+    return response.data;
+}
 
 
 export const sendOtp = async( email: string ) => {
@@ -36,8 +45,12 @@ export const sendOtp = async( email: string ) => {
     return response.data;
 }
 export const validateUserAuth = async( ) => {
+    try {
     const response = await api.post(`${API_URL}/auth/verify-user-token`,{ withCredentials: true })
     return response.data;
+    } catch (error) {
+        throw error
+    }
 }
 
 
@@ -102,3 +115,11 @@ export const handleRegisterToInstructor = async (data : RegisterInstructorFormVa
     }
 }
 
+export const changeProfileImage = async(userId:string, formData: FormData) => {
+    try {
+    const response = await api.post(`${API_URL}/student/profile/${userId}/update-image`,formData,{ headers:{ 'Content-Type':"multipart/form-data" }, withCredentials: true })
+    return response.data;
+    } catch (error) {
+        throw error
+    }
+}

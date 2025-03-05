@@ -42,6 +42,11 @@ api.interceptors.response.use(
                     return api(error.config)
                 } catch (refreshError) {
                     console.log('Refesh token expired or invalid, Loggin out...')
+                    // // logout user
+                   // store.dispatch(logoutSliceAction())
+                    // // //delete all persist data of auth
+                     // persistor.purge();
+                    // //navigate to login
                      clearSpecificPersistedData('persist:auth')
                    window.location.href = '/login'
                     return Promise.reject(refreshError)

@@ -6,10 +6,11 @@ import { connectDB } from '../infrastructure/repositories/dbConnection';
 import authRoutes from '../interfaces/routes/authRoutes'
 import bodyParser from 'body-parser'
 import { errorMiddleWare } from '../interfaces/middlewares/errorMiddleWare';
-import protectedRoutes from '../interfaces/routes/studentRoutes';
+import studentRoutes from '../interfaces/routes/studentRoutes';
 import adminRouter from '../interfaces/routes/adminRoutes';
 import session from 'express-session';
 import { config } from '../infrastructure/config/config';
+import instructorRouter from '../interfaces/routes/instructorRoutes';
 
 const PORT = config.app.PORT
 
@@ -27,9 +28,6 @@ app.use(cors({
     credentials : config.cors.CREDENTIALS
 }));
 
-//bodyparser for cloudinary
-
-// app.use(express.json({limit : "50mb"}))
 
 app.use(bodyParser.urlencoded({
     extended: true
@@ -54,10 +52,11 @@ app.get('/', (req: Request , res:Response, next : NextFunction) => {
     })
 })
 
-//authroutes 
+//routes
 app.use('/api/auth', authRoutes)
-app.use('/api/student', protectedRoutes)
+app.use('/api/student', studentRoutes)
 app.use('/api/admin', adminRouter)
+app.use('/api/instructor', instructorRouter)
 
 //unknown routes 
 app.all('*', (req: Request, res: Response, next : NextFunction) => {

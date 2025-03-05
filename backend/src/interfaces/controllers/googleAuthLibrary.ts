@@ -36,7 +36,6 @@ export const googleLogin = async (req: Request, res: Response , next: NextFuncti
         email: payload.email!,
         firstName: payload.given_name!,
         lastName: payload.family_name!,
-       
         isVerified: true
       });
     }
@@ -58,6 +57,7 @@ export const googleLogin = async (req: Request, res: Response , next: NextFuncti
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
+          //picture: user.picture,
           role: user.role
         },
       });

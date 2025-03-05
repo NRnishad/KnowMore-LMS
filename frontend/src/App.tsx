@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import Login from "./pages/students/Login";
 import Home from "./pages/students/Home";
@@ -8,7 +8,6 @@ import VerifyAccount from "./pages/VerifyAccount";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import Unauthorized from "./pages/Unauthorized";
-import LandingPage from "./pages/LandingPage";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
 import ForgotPassword from "./pages/students/ForgotPassword";
@@ -23,8 +22,8 @@ import ProfileCourses from "./components/user/profile/ProfileCourses";
 import ProfileEdit from "./components/user/profile/ProfileEdit";
 import ProfileChangePassword from "./components/user/profile/ProfileChangePassword";
 import InstructorDashboard from "./pages/instructor/InstructorDashboard";
-import InstructorDashboardComponent from "./components/instructor/Dashboard";
-import InstructorCourses from "./components/instructor/InstructorCourses";
+import InstructorDashboardComponent from "./pages/instructor/Dashboard";
+import InstructorCourses from "./pages/instructor/InstructorCourses";
 import Messages from "./components/instructor/Messages";
 import Notifications from "./components/instructor/Notifications";
 import Navbar from "./components/common/Navbar/Navbar";
@@ -34,6 +33,18 @@ import AddUser from "./components/Admin/AddUser";
 import EditUser from "./components/Admin/EditUser";
 import InstructorApplication from "./components/Admin/InstructorApplication";
 import InstructorManagement from "./components/Admin/InstructorManagement";
+import Categories from "./components/Admin/Categories";
+import CreateCategory from "./pages/admin/Category/CreateCategory";
+import EditCategory from "./pages/admin/Category/EditCategory";
+import CourseMainCreation from "./pages/instructor/course/CourseMainCreation";
+import LectureCreation from "./pages/instructor/course/LectureCreation";
+import CourseOverview from "./pages/instructor/course/CourseOverview";
+import CourseMainEdit from "./pages/instructor/course/CourseMainEdit";
+import LectureEdit from "./pages/instructor/course/LectureEdit";
+import CoursesPage from "./pages/students/coursesPage/CoursesPage";
+import CourseDetails from "./pages/students/courseDetails/CourseDetails";
+import AdminCourseManagement from "./pages/admin/courses/CourseManagement";
+import CourseOverviewAdmin from "./pages/admin/courses/CourseOverview";
 
 const GOOGLE_CLIENT_ID = config.google.CLIENT_ID;
 
@@ -41,25 +52,38 @@ function App() {
   if (!GOOGLE_CLIENT_ID) {
     console.error("Google client id is not defined");
   }
+
+  const Layout = ({ children }: { children: React.ReactNode }) => {
+    const location = useLocation(); 
+    const isAdminRoute = location.pathname.startsWith("/admin");
+    return (
+      <>
+        {!isAdminRoute && <Navbar />}
+        {children}
+      </>
+    );
+  };
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <Router>
         {/* <Navbar /> */}
-        <Navbar />
+        <Layout>
+
         <Toaster />
 
         <Routes>
-          <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/verify-account" element={<VerifyAccount />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/courses" element={<CoursesPage />} />
+            <Route path="/courses/course-details/:id" element={<CourseDetails />} />
 
           {/* Protected routes */}
           <Route element={<ProtectedRoute />}>
-            <Route path="/home" element={<Home />} />
 
             {/* Profile */}
             <Route path="/profile" element={<ProfileSidebar />}>
@@ -87,6 +111,14 @@ function App() {
               <Route path="courses" element={<InstructorCourses />} />
               <Route path="messages" element={<Messages />} />
               <Route path="notifications" element={<Notifications />} />
+
+
+              <Route path="courses/create" element={<CourseMainCreation />} />
+              <Route path="courses/create/:courseId/lecture" element={<LectureCreation />} />
+              <Route path="courses/create/:courseId/lecture/overview" element={<CourseOverview />} />
+              <Route path="courses/:courseId/overview" element={<CourseOverview />} />
+              <Route path="courses/:courseId/edit" element={<CourseMainEdit />} />
+              <Route path="courses/:courseId/edit/lecture" element={<LectureEdit />} />
             </Route>
           </Route>
 
@@ -98,7 +130,12 @@ function App() {
             <Route path="users" element={<UserManagement />} />
             <Route path="users/create" element={<AddUser />} />
             <Route path="users/edit/:id" element={<EditUser />} />
+            <Route path="categories" element={<Categories />} />
+            <Route path="categories/create" element={<CreateCategory />} />
+            <Route path="categories/:id/edit" element={<EditCategory />} />
             <Route path="instructors" element={<InstructorManagement />} />
+            <Route path="courses" element={<AdminCourseManagement />} />
+            <Route path="courses/:courseId/overview" element={<CourseOverviewAdmin />} />
             <Route
               path="instructors/application/:id"
               element={<InstructorApplication />}
@@ -110,7 +147,7 @@ function App() {
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
-        
+        </Layout>
       </Router>
     </GoogleOAuthProvider>
   );

@@ -4,5 +4,4 @@ export interface RegisterInstructorFormValues {
     expertise: string[];
     comment: string;
     password: string;
-   
 }

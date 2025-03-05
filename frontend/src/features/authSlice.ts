@@ -1,15 +1,16 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { login as loginAPI, logout as logoutAPI, register as registerAPI, verifyAccount as verifyAccountAPI, sendOtp as sendOtpAPI, validateUserAuth, forgotPassword, resetPasswordAPI, handleGoogleLogin, handleRegisterToInstructor, adminLogout, handleChangePasswordAPI, handleEditUserAPI} from "@/api/auth";
+import { login as loginAPI, logout as logoutAPI, register as registerAPI, verifyAccount as verifyAccountAPI, sendOtp as sendOtpAPI, validateUserAuth, forgotPassword, resetPasswordAPI, handleGoogleLogin, handleRegisterToInstructor, adminLogout, handleChangePasswordAPI, handleEditUserAPI, changeProfileImage, getUserDataAPI, updateEmailUserProfileAPI} from "@/api/auth";
 import { RegisterInstructorFormValues } from "@/types/instructor";
 interface AuthState {
     user: {
-        id: string;
+        _id: string;
         firstName: string;
         lastName: string;
         phone : string;
         email : string ;
         role : string;
-        createdAt: Date
+        createdAt?: Date;
+        profileImageUrl?: string;
     } | null;
     loading: boolean;
     error: string  | null;
@@ -39,6 +40,11 @@ export const logout = createAsyncThunk('auth/logout', async() => {
     return response
 })
 
+export const getUserDataThunk = createAsyncThunk('auth/user-data/:id', async(userId: string) => {
+    const response = await getUserDataAPI(userId);
+    return response
+})
+
 export const register = createAsyncThunk('auth/signup', async(data:{firstName : string, lastName : string, email : string, password : string, phone: string}, { rejectWithValue }) => {
    
   try {
@@ -53,6 +59,14 @@ export const register = createAsyncThunk('auth/signup', async(data:{firstName : 
 export const verifyAccount = createAsyncThunk('auth/verify-otp', async(data:{otp: string , email :string},{rejectWithValue})=>{
   try {
     const response = await verifyAccountAPI(data.email, data.otp)
+    return response;
+  } catch (error :any) {
+    return rejectWithValue(error.response?.data || 'Verification failed')
+  }
+})
+export const updateEmailUserProfile = createAsyncThunk('auth/profile/edit/email', async(data:{otp: string , email :string},{rejectWithValue})=>{
+  try {
+    const response = await updateEmailUserProfileAPI(data.email, data.otp)
     return response;
   } catch (error :any) {
     return rejectWithValue(error.response?.data || 'Verification failed')
@@ -130,6 +144,14 @@ export const editProfileThunk = createAsyncThunk('auth/profile/edit', async(data
     return rejectWithValue(error.response.data)
   }
 })
+export const changeProfileImageThunk = createAsyncThunk('/student/profile/:id/update-image', async(data : {userId:string, formData:FormData}, {rejectWithValue}) => {
+  try {
+    const response = await changeProfileImage(data.userId, data.formData)
+    return response
+  } catch (error : any) {
+    return rejectWithValue(error.response.data)
+  }
+})
 
 //slice
 
@@ -150,7 +172,8 @@ const authSlice = createSlice({
       authSuccess(
         state,
         action: PayloadAction<{
-          user: { id: string; email: string; role: string , firstName:string , lastName: string, phone: string, createdAt: Date};
+          user: { _id: string; email: string; role: string , firstName:string , lastName: string, 
+            phone: string, createdAt?: Date, profileImageUrl?: string};
         }>
       ) {
         state.loading = false;
